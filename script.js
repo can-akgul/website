@@ -14,12 +14,40 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Initialize smooth scrolling
     initializeSmoothScrolling();
+    
+    // Initialize progress bar
+    initializeProgressBar();
 });
 
 // ===== THEME MANAGEMENT =====
 function initializeTheme() {
-    // Theme toggle is hidden, site is always black
-    console.log('Site is set to pure black theme');
+    const themeToggle = document.getElementById('themeToggle');
+    const body = document.body;
+    
+    // Check for saved theme preference or default to 'dark'
+    const savedTheme = localStorage.getItem('theme') || 'dark';
+    
+    // Apply the saved theme
+    if (savedTheme === 'light') {
+        body.setAttribute('data-theme', 'light');
+    } else {
+        body.removeAttribute('data-theme');
+    }
+    
+    // Theme toggle functionality
+    themeToggle.addEventListener('click', function() {
+        const currentTheme = body.getAttribute('data-theme');
+        
+        if (currentTheme === 'light') {
+            // Switch to dark theme
+            body.removeAttribute('data-theme');
+            localStorage.setItem('theme', 'dark');
+        } else {
+            // Switch to light theme
+            body.setAttribute('data-theme', 'light');
+            localStorage.setItem('theme', 'light');
+        }
+    });
 }
 
 // ===== NAVIGATION MANAGEMENT =====
@@ -63,34 +91,8 @@ function initializeNavigation() {
 
 // ===== MOBILE MENU MANAGEMENT =====
 function initializeMobileMenu() {
-    const mobileMenuBtn = document.getElementById('mobileMenuBtn');
-    const navMenu = document.querySelector('.nav-menu');
-    const navLinks = document.querySelectorAll('.nav-link');
-    
-    // Toggle mobile menu
-    mobileMenuBtn.addEventListener('click', function() {
-        navMenu.classList.toggle('active');
-        mobileMenuBtn.classList.toggle('active');
-        document.body.classList.toggle('menu-open');
-    });
-    
-    // Close menu when clicking on a link
-    navLinks.forEach(link => {
-        link.addEventListener('click', function() {
-            navMenu.classList.remove('active');
-            mobileMenuBtn.classList.remove('active');
-            document.body.classList.remove('menu-open');
-        });
-    });
-    
-    // Close menu when clicking outside
-    document.addEventListener('click', function(e) {
-        if (!e.target.closest('.nav') && navMenu.classList.contains('active')) {
-            navMenu.classList.remove('active');
-            mobileMenuBtn.classList.remove('active');
-            document.body.classList.remove('menu-open');
-        }
-    });
+    // Mobile menu functionality removed - navigation is always visible
+    console.log('Mobile menu disabled - navigation always visible');
 }
 
 // ===== SCROLL ANIMATIONS =====
@@ -306,76 +308,23 @@ document.addEventListener('DOMContentLoaded', function() {
     // initializeLoader();
 });
 
-// ===== MOBILE MENU STYLES =====
-const mobileMenuStyles = `
-    @media (max-width: 768px) {
-        .nav-menu {
-            position: fixed;
-            top: 100%;
-            left: 0;
-            right: 0;
-            background-color: var(--bg-primary);
-            flex-direction: column;
-            padding: 2rem;
-            transform: translateX(-100%);
-            transition: transform 0.3s ease;
-            border-top: 1px solid var(--border-color);
-            box-shadow: var(--shadow);
-        }
-        
-        .nav-menu.active {
-            transform: translateX(0);
-        }
-        
-        .nav-menu li {
-            margin: 0.5rem 0;
-        }
-        
-        .mobile-menu-btn.active span:nth-child(1) {
-            transform: rotate(-45deg) translate(-5px, 6px);
-        }
-        
-        .mobile-menu-btn.active span:nth-child(2) {
-            opacity: 0;
-        }
-        
-        .mobile-menu-btn.active span:nth-child(3) {
-            transform: rotate(45deg) translate(-5px, -6px);
-        }
-        
-        .scroll-to-top {
-            position: fixed;
-            bottom: 2rem;
-            right: 2rem;
-            background-color: var(--text-accent);
-            color: white;
-            border: none;
-            border-radius: 50%;
-            width: 50px;
-            height: 50px;
-            font-size: 1.2rem;
-            cursor: pointer;
-            opacity: 0;
-            visibility: hidden;
-            transform: translateY(20px);
-            transition: all 0.3s ease;
-            z-index: 1000;
-        }
-        
-        .scroll-to-top.visible {
-            opacity: 1;
-            visibility: visible;
-            transform: translateY(0);
-        }
-        
-        .scroll-to-top:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 25px rgba(59, 130, 246, 0.3);
-        }
-    }
-`;
+// Mobile menu styles removed - navigation is always visible
 
-// Inject mobile menu styles
-const styleSheet = document.createElement('style');
-styleSheet.textContent = mobileMenuStyles;
-document.head.appendChild(styleSheet); 
+// ===== PROGRESS BAR =====
+function initializeProgressBar() {
+    const progressBar = document.getElementById('progressBar');
+    
+    function updateProgressBar() {
+        const scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
+        const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+        const scrolled = (scrollTop / scrollHeight) * 100;
+        
+        progressBar.style.width = scrolled + '%';
+    }
+    
+    // Update progress bar on scroll
+    window.addEventListener('scroll', throttle(updateProgressBar, 10));
+    
+    // Initial call
+    updateProgressBar();
+} 
